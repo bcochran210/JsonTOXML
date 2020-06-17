@@ -4,18 +4,17 @@ import xml.dom.minidom
 
 
 def _addSubList(root,key1,data):
-
-        subroot = None
-        for key in range(len(data)):
-            if type(data[key]) in (dict,):
-                subroot=ET.SubElement(root,str(key))
-                _addSubDict(subroot,data[key])
-                continue
-            if type(data[key]) in (list,):
-                subroot=ET.SubElement(root,str(key))
-                _addSubList(subroot,key1,data[key]) 
-                continue
-            ET.SubElement(root,str(key)).text=str(data[key])
+    subroot = None
+    for key in range(len(data)):
+        if type(data[key]) in (dict,):
+            subroot=ET.SubElement(root,str(key1))
+            _addSubDict(subroot,data[key])
+            continue
+        if type(data[key]) in (list,):
+            subroot=ET.SubElement(root,str(key1))
+            _addSubList(subroot,key1,data[key]) 
+            continue
+        ET.SubElement(root,str(key1)).text=str(data[key])
 
         
 
@@ -24,16 +23,15 @@ def _addSubDict(root,data):
     for key in data:
         if type(key) == str and key[0] == "@" and len(key) > 1:
             root.set(key[1:], data[key])
-        else:
-            if type(data[key]) in (dict,):
-                subroot=ET.SubElement(root,str(key)) 
-                _addSubDict(subroot,data[key])
-                continue
-            if type(data[key]) in (list,):
-                subroot=ET.SubElement(root,str(key))
-                _addSubList(subroot,key,data[key]) 
-                continue
-            ET.SubElement(root,str(key)).text=str(data[key])
+            continue
+        if type(data[key]) in (dict,):
+            subroot=ET.SubElement(root,str(key)) 
+            _addSubDict(subroot,data[key])
+            continue
+        if type(data[key]) in (list,):
+            _addSubList(root,key,data[key]) 
+            continue
+        ET.SubElement(root,str(key)).text=str(data[key])
 
 
 def _jsontoxml(dictionary,rootName="root"):
